@@ -3,37 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il mio Sito Web</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            text-align: center;
-            color: white;
-            padding: 40px;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-    </style>
+    <title>Segnala Immobili | Guadagna con le tue informazioni</title>
+    <meta name="description" content="Trasforma la tua conoscenza immobiliare in guadagno. Segnala immobili e ricevi una commissione quando vengono venduti. Zero costi, zero rischi.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Benvenuto!</h1>
-        <p>Il mio primo sito web su Vercel</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Segnala<span class="logo-accent">Guadagna</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#come-funziona">Come funziona</a>
+                <a href="#risultati">Risultati</a>
+                <a href="#agenzie">Per Agenzie</a>
+                <a href="admin.html">Admin</a>
+                <a href="agency.html" class="btn-nav">Agenzia</a>
+                <a href="dashboard.html" class="btn-nav">Accedi</a>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('active'); this.classList.toggle('active');">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-particles"></div>
+            <div class="hero-gradient"></div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span>Piattaforma #1 in Italia</span>
+                </div>
+                <h1 class="hero-title">
+                    Guadagna da opportunità<br>
+                    <span class="highlight">che gli altri ignorano</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Segnala un immobile che conosci. Se viene venduto, ricevi una commissione. 
+                    <strong>Nessun investimento. Nessun rischio.</strong> Solo guadagno.
+                </p>
+                <div class="hero-actions">
+                    <a href="#segnala" class="btn-primary btn-large">
+                        <span class="btn-icon">🏠</span>
+                        Segnala ora
+                        <span class="btn-arrow">→</span>
+                    </a>
+                    <a href="#come-funziona" class="btn-secondary btn-large">
+                        Come funziona
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="2500">0</span>
+                        <span class="stat-label">Immobili segnalati</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="1800">0</span>
+                        <span class="stat-label">Vendite concluse</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-count="450000" data-prefix="€">0</span>
+                        <span class="stat-label">Guadagni distribuiti</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-card card-1">
+                    <span class="card-icon">💰</span>
+                    <span class="card-text">+€2.500 guadagnati</span>
+                </div>
+                <div class="floating-card card-2">
+                    <span class="card-icon">✅</span>
+                    <span class="card-text">Pagamento ricevuto</span>
+                </div>
+                <div class="floating-card card-3">
+                    <span class="card-icon">🎯</span>
+                    <span class="card-text">Immobile venduto!</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="come-funziona" class="how-it-works">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Semplicità assoluta</span>
+                <h2 class="section-title">3 step verso il guadagno</h2>
+                <p class="section-subtitle">Riduci lo sforzo mentale al minimo. La bellezza è nella semplicità.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card step-1">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">📍</div>
+                    <h3 class="step-title">Segnali l'immobile</h3>
+                    <p class="step-description">In meno di 30 secondi. Indirizzo, foto, e qualsiasi informazione utile. Da qualsiasi luogo.</p>
+                </div>
+                <div class="step-card step-2">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">🏢</div>
+                    <h3 class="step-title">L'agenzia lo gestisce</h3>
+                    <p class="step-description">Agenzie partner qualificate prendono in carico la vendita. Tu non devi fare nulla.</p>
+                </div>
+                <div class="step-card step-3">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">💵</div>
+                    <h3 class="step-title">Guadagni</h3>
+                    <p class="step-description">Pagamento entro 10 giorni dal rogito. Nessun costo. Nessuna commissione da pagare.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Preview Section -->
+    <section class="reward-preview">
+        <div class="section-container">
+            <div class="reward-content">
+                <div class="reward-text">
+                    <span class="section-tag">Ricompensa anticipata</span>
+                    <h2>Quella casa che conosci<br><span class="highlight">potrebbe valere migliaia di euro</span></h2>
+                    <p>Immagina di ricevere un bonifico di €1.000, €2.500, €5.000... per una semplice informazione che hai fornito in 30 secondi.</p>
+                    <ul class="reward-list">
+                        <li><span class="check">✓</span> Commissioni fino al 50% del valore dell'immobile</li>
+                        <li><span class="check">✓</span> Pagamenti tracciati e certi</li>
+                        <li><span class="check">✓</span> Zero costi nascosti</li>
+                    </ul>
+                </div>
+                <div class="reward-visual">
+                    <div class="money-stack">
+                        <div class="bill bill-1">€500</div>
+                        <div class="bill bill-2">€1.000</div>
+                        <div class="bill bill-3">€2.500</div>
+                        <div class="bill bill-4">€5.000+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="section-container">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <div class="trust-icon">🛡️</div>
+                    <h3>Rischio zero</h3>
+                    <p>Nessun costo per te. Guadagni solo se l'affare si conclude.</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">⚡</div>
+                    <h3>Pagamento rapido</h3>
+                    <p>Entro 10 giorni dal rogito notarile.</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">🔒</div>
+                    <h3>Sistema tracciato</h3>
+                    <p>Ogni segnalazione ha un ID univoco. Segui tutto in tempo reale.</p>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon">✅</div>
+                    <h3>Agenzie verificate</h3>
+                    <p>Collaboriamo solo con agenzie certificate e affidabili.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="risultati" class="results-section">
+        <div class="section-container">
+            <div class="section-header light">
+                <span class="section-tag">I numeri parlano chiaro</span>
+                <h2 class="section-title">Risultati reali</h2>
+            </div>
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-icon">🏠</div>
+                    <span class="result-number" data-count="2500">0</span>
+                    <span class="result-label">Immobili segnalati</span>
+                </div>
+                <div class="result-card">
+                    <div class="result-icon">🤝</div>
+                    <span class="result-number" data-count="1800">0</span>
+                    <span class="result-label">Vendite concluse</span>
+                </div>
+                <div class="result-card">
+                    <div class="result-icon">💰</div>
+                    <span class="result-number" data-count="450000" data-prefix="€">0</span>
+                    <span class="result-label">Guadagni distribuiti</span>
+                </div>
+                <div class="result-card">
+                    <div class="result-icon">⭐</div>
+                    <span class="result-number" data-count="98" data-suffix="%">0</span>
+                    <span class="result-label">Soddisfazione utenti</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="testimonials">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Riprova sociale</span>
+                <h2 class="section-title">Cosa dicono i nostri segnalatori</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">M</div>
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">Marco R.</span>
+                            <span class="testimonial-location">Milano</span>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"Ho segnalato un appartamento di mia zia che era in vendita da mesi. In 3 settimane è stato venduto e ho ricevuto €1.200. Senza fare nulla!"</p>
+                    <div class="testimonial-earnings">+€1.200 guadagnati</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">S</div>
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">Sara L.</span>
+                            <span class="testimonial-location">Roma</span>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"Era un immobile abbandonato nel mio quartiere. Ho pensato 'provo'. Risultato: €800 in meno di 2 mesi. Incredibile."</p>
+                    <div class="testimonial-earnings">+€800 guadagnati</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <div class="testimonial-avatar">G</div>
+                        <div class="testimonial-info">
+                            <span class="testimonial-name">Giuseppe T.</span>
+                            <span class="testimonial-location">Napoli</span>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"Conosco tanti immobili nella mia zona. Ora ogni volta che ne vedo uno interessante, segnalo. Il mese scorso: €3.500."</p>
+                    <div class="testimonial-earnings">+€3.500 guadagnati</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Urgency Section -->
+    <section class="urgency-section">
+        <div class="section-container">
+            <div class="urgency-content">
+                <span class="urgency-icon">⚡</span>
+                <h2>Le migliori segnalazioni vengono acquisite velocemente</h2>
+                <p>Gli immobili con buone opportunità non restano sul mercato a lungo. Prima segnali, prima guadagni.</p>
+                <a href="#segnala" class="btn-primary btn-large">
+                    Non perdere tempo - Segnala ora
+                    <span class="btn-arrow">→</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agencies Section -->
+    <section id="agenzie" class="agencies-section">
+        <div class="section-container">
+            <div class="agencies-content">
+                <div class="agencies-text">
+                    <span class="section-tag">Per agenzie immobiliari</span>
+                    <h2>Accedi a immobili <span class="highlight">prima degli altri</span></h2>
+                    <p>Ricevi lead già individuati. Risparmia tempo sulla ricerca. Concentrati sulla vendita.</p>
+                    <ul class="agencies-benefits">
+                        <li>
+                            <span class="benefit-icon">🎯</span>
+                            <div>
+                                <strong>Lead qualificati</strong>
+                                <span>Immobili con potenziale di vendita identificato</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-icon">⏱️</span>
+                            <div>
+                                <strong>Risparmio di tempo</strong>
+                                <span>Focus sulla vendita, non sulla ricerca</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="benefit-icon">📈</span>
+                            <div>
+                                <strong>Maggiori opportunità</strong>
+                                <span>Pipeline costantemente rifornita</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="agencies-pricing">
+                    <div class="pricing-card">
+                        <h3>Abbonamento Premium</h3>
+                        <div class="price">
+                            <span class="price-amount">€99</span>
+                            <span class="price-period">/mese</span>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>✅ Accesso illimitato ai lead</li>
+                            <li>✅ Priorità sulle nuove segnalazioni</li>
+                            <li>✅ Dashboard dedicata</li>
+                            <li>✅ Supporto dedicato</li>
+                            <li>✅ Nessuna commissione extra</li>
+                        </ul>
+                        <a href="agency.html" class="btn-pricing">Accedi alla dashboard</a>
+                        <p class="pricing-note">Primo mese gratis per nuove agenzie</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Referral Form Section -->
+    <section id="segnala" class="referral-section">
+        <div class="section-container">
+            <div class="section-header">
+                <span class="section-tag">Inizia ora</span>
+                <h2 class="section-title">Segnala il tuo immobile</h2>
+                <p class="section-subtitle">Meno di 30 secondi. Nessun costo. Nessun impegno.</p>
+            </div>
+            <form class="referral-form" id="referralForm" onsubmit="event.preventDefault(); handleReferralSubmit(event);">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="propertyType">Tipo immobile *</label>
+                        <select id="propertyType" name="propertyType" required>
+                            <option value="">Seleziona...</option>
+                            <option value="appartamento">Appartamento</option>
+                            <option value="villa">Villa / Casa indipendente</option>
+                            <option value="ufficio">Ufficio</option>
+                            <option value="locale">Locale commerciale</option>
+                            <option value="terreno">Terreno</option>
+                            <option value="altro">Altro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="propertyAddress">Indirizzo *</label>
+                        <input type="text" id="propertyAddress" name="propertyAddress" placeholder="Via, città, CAP" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="propertyCity">Città *</label>
+                        <input type="text" id="propertyCity" name="propertyCity" placeholder="Città" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="propertyArea">Zona/Quartiere</label>
+                        <input type="text" id="propertyArea" name="propertyArea" placeholder="Zona (opzionale)">
+                    </div>
+                    <div class="form-group">
+                        <label for="estimatedValue">Valore stimato (€)</label>
+                        <input type="number" id="estimatedValue" name="estimatedValue" placeholder="Valore approssimativo">
+                    </div>
+                    <div class="form-group">
+                        <label for="yourName">Il tuo nome *</label>
+                        <input type="text" id="yourName" name="yourName" placeholder="Nome e cognome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="yourEmail">Email *</label>
+                        <input type="email" id="yourEmail" name="yourEmail" placeholder="La tua email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="yourPhone">Telefono *</label>
+                        <input type="tel" id="yourPhone" name="yourPhone" placeholder="Il tuo numero" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="yourPassword">Password</label>
+                        <input type="password" id="yourPassword" name="yourPassword" placeholder="Lascia vuoto se non sei registrato">
+                    </div>
+                </div>
+                
+                <!-- Payment Details Section -->
+                <div class="payment-details-section" style="margin: 20px 0; padding: 20px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px;">
+                    <h4 style="color: #10b981; margin-bottom: 15px; font-size: 1rem;">💰 Dati per il Pagamento</h4>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 15px;">Inserisci i tuoi dati bancari per ricevere il pagamento della commissione quando l'immobile viene venduto.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="iban">IBAN *</label>
+                            <input type="text" id="iban" name="iban" placeholder="IT00 XXXX XXXX XXXX XXXX XXXX" required pattern="[A-Z]{2}[0-9]{2}[A-Z0-9]+" maxlength="34">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountHolder">Intestatario conto *</label>
+                            <input type="text" id="accountHolder" name="accountHolder" placeholder="Nome e cognome come da conto" required>
+                        </div>
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 10px;">🔒 I tuoi dati bancari sono crittografati e sicuri. Verranno usati solo per trasferire la commissione.</p>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="additionalInfo">Informazioni aggiuntive</label>
+                    <textarea id="additionalInfo" name="additionalInfo" rows="3" placeholder="Condizioni dell'immobile, motivo della vendita, eventuali lavori da fare..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary btn-large">
+                        <span class="btn-icon">📨</span>
+                        Invia segnalazione
+                    </button>
+                </div>
+                <p class="form-disclaimer">
+                    <span class="lock-icon">🔒</span>
+                    I tuoi dati sono al sicuro. Non li condivideremo con terze parti.
+                </p>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Segnala<span class="logo-accent">Guadagna</span></span>
+                    </a>
+                    <p>Trasforma la tua conoscenza immobiliare in guadagno reale.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Piattaforma</h4>
+                        <a href="#come-funziona">Come funziona</a>
+                        <a href="#risultati">Risultati</a>
+                        <a href="#agenzie">Per agenzie</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Azienda</h4>
+                        <a href="#">Chi siamo</a>
+                        <a href="#">Contatti</a>
+                        <a href="#">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SegnalaGuadagna. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Chiudi">&times;</button>
+            <div class="modal-icon">🎉</div>
+            <h3>Segnalazione inviata!</h3>
+            <p>Grazie per la tua segnalazione. Ora puoi seguire lo stato nella tua <a href="dashboard.html">dashboard personale</a>.</p>
+            <p class="modal-id">ID Segnalazione: <strong id="referralId">---</strong></p>
+            <div class="modal-actions">
+                <a href="dashboard.html" class="btn-primary">Vai alla dashboard</a>
+                <button class="btn-secondary modal-close-btn">Segnala un altro</button>
+            </div>
+        </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js</script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js</script>
+    <script src="main.js"></script>
 </body>
 </html>
