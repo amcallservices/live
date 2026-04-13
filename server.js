@@ -20,6 +20,20 @@ app.use(express.json());
 // Serve static files from current directory
 app.use(express.static(__dirname, { index: 'index.html' }));
 
+// Debug route to check what's happening
+app.get('/debug', (req, res) => {
+    res.json({ 
+        dirname: __dirname, 
+        files: fs.readdirSync(__dirname),
+        indexExists: fs.existsSync(__dirname + '/index.html')
+    });
+});
+
+// Test route
+app.get('/test', (req, res) => {
+    res.send('Server is working!');
+});
+
 // Initialize users storage
 const USERS_FILE = './data/users.json';
 
