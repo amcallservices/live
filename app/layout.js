@@ -1,3 +1,5 @@
+import './globals.css'
+
 export const metadata = {
   title: 'Badanti Match - Trova la badante ideale',
   description: 'Il portale per famiglie che cercano badanti e badanti che cercano lavoro',
