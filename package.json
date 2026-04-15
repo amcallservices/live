@@ -9,13 +9,15 @@
     "vercel-build": "next build"
   },
   "dependencies": {
+    "@vercel/postgres": "^0.8.0",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@vercel/postgres": "^0.8.0",
-    "stripe": "^14.0.0",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
     "tailwindcss": "^3.4.0"
   }
 }

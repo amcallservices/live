@@ -45,7 +45,7 @@ export default function CreaAnnuncio() {
     'PROVA': { sconto: 100, descrizione: 'Prova gratuita' },
     'WELCOME50': { sconto: 50, descrizione: '50% di sconto' },
     'PRIMOANNUNCIO': { sconto: 100, descrizione: 'Primo annuncio gratis' }
-  ]
+  }
 
   const applicaSconto = () => {
     const codice = codiceSconto.trim().toUpperCase()
