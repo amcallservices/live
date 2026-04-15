@@ -6,6 +6,8 @@ export default function CreaAnnuncio() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [codiceSconto, setCodiceSconto] = useState('')
+  const [scontoApplicato, setScontoApplicato] = useState(null)
   const [formData, setFormData] = useState({
     nome_famiglia: '',
     telefono: '',
@@ -37,16 +39,46 @@ export default function CreaAnnuncio() {
     'Assistenza occasionale'
   ]
 
+  // Codici sconto validi
+  const codiciSconto = {
+    'BADANTE2024': { sconto: 100, descrizione: 'Gratis per sempre!' },
+    'PROVA': { sconto: 100, descrizione: 'Prova gratuita' },
+    'WELCOME50': { sconto: 50, descrizione: '50% di sconto' },
+    'PRIMOANNUNCIO': { sconto: 100, descrizione: 'Primo annuncio gratis' }
+  ]
+
+  const applicaSconto = () => {
+    const codice = codiceSconto.trim().toUpperCase()
+    if (codiciSconto[codice]) {
+      setScontoApplicato(codiciSconto[codice])
+      setError('')
+    } else {
+      setScontoApplicato(null)
+      setError('Codice sconto non valido')
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
+    // Calcola prezzo scontato
+    let prezzo = 4.99
+    if (scontoApplicato) {
+      prezzo = (4.99 * (100 - scontoApplicato.sconto)) / 100
+    }
+
     try {
       const res = await fetch('/api/annunci/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          codice_sconto: codiceSconto.trim().toUpperCase(),
+          sconto_percentuale: scontoApplicato?.sconto || 0,
+          prezzo_pagato: prezzo
+        })
       })
 
       const data = await res.json()
@@ -82,8 +114,50 @@ export default function CreaAnnuncio() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6">
             <p className="text-amber-800">
-              <strong>💰 Costo: 4,99€</strong> - L'annuncio resterà visibile per 30 giorni
+              {scontoApplicato ? (
+                <>
+                  <span className="line-through text-gray-500 mr-2">4,99€</span>
+                  <strong className="text-green-600 text-xl">
+                    {(4.99 * (100 - scontoApplicato.sconto) / 100).toFixed(2)}€ 
+                    ({scontoApplicato.descrizione})
+                  </strong>
+                </>
+              ) : (
+                <strong>💰 Costo: 4,99€</strong>
+              )}
+              - L'annuncio resterà visibile per 30 giorni
             </p>
+          </div>
+
+          {/* Codice Sconto */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <label className="block text-blue-800 font-medium mb-2">
+              🎫 Hai un codice sconto?
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                className="flex-1 px-4 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                placeholder="Inserisci codice sconto"
+                value={codiceSconto}
+                onChange={e => setCodiceSconto(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={applicaSconto}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+              >
+                Applica
+              </button>
+            </div>
+            {scontoApplicato && (
+              <p className="text-green-600 mt-2 font-medium">
+                ✅ Codice applicato: {scontoApplicato.descrizione}
+              </p>
+            )}
+            {error && !scontoApplicato && (
+              <p className="text-red-600 mt-2">{error}</p>
+            )}
           </div>
 
           {error && (
@@ -211,7 +285,9 @@ export default function CreaAnnuncio() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-orange-600 to-amber-600 text-white py-4 rounded-xl font-bold text-lg hover:from-orange-700 hover:to-amber-700 transition-all disabled:opacity-50"
             >
-              {loading ? 'Elaborazione...' : '💳 Paga e Pubblica (4,99€)'}
+              {loading ? 'Elaborazione...' : scontoApplicato && scontoApplicato.sconto === 100 
+                ? '🚀 Pubblica Gratis!' 
+                : `💳 Paga e Pubblica (${scontoApplicato ? (4.99 * (100 - scontoApplicato.sconto) / 100).toFixed(2) : '4,99'}€)`}
             </button>
           </form>
         </div>

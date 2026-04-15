@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Check if table exists, if not create it
+    // Check if table exists, if not create it (with new columns for discount)
     await sql`
       CREATE TABLE IF NOT EXISTS annunci (
         id SERIAL PRIMARY KEY,
@@ -21,6 +21,9 @@ export default async function handler(req, res) {
         stato TEXT DEFAULT 'attivo',
         pagamento BOOLEAN DEFAULT false,
         stripe_session_id TEXT,
+        codice_sconto TEXT,
+        sconto_percentuale INTEGER DEFAULT 0,
+        prezzo_pagato DECIMAL(10,2) DEFAULT 4.99,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `
