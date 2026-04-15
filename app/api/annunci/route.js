@@ -1,13 +1,18 @@
-import { sql } from '@vercel/postgres'
+import { createClient } from '@vercel/postgres'
 
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' })
-  }
+// Use createClient for direct connection
+const createSql = () => createClient({ 
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL 
+})
 
+export async function GET() {
+  let client
   try {
-    // Check if table exists, if not create it (with new columns for discount)
-    await sql`
+    client = createSql()
+    await client.connect()
+    
+    // Create table if not exists
+    await client.query(`
       CREATE TABLE IF NOT EXISTS annunci (
         id SERIAL PRIMARY KEY,
         nome_famiglia TEXT NOT NULL,
@@ -26,25 +31,25 @@ export default async function handler(req, res) {
         prezzo_pagato DECIMAL(10,2) DEFAULT 4.99,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
-    `
+    `)
     
-    // Get all active annunci
-    const annunci = await sql`
-      SELECT * FROM annunci 
-      WHERE stato = 'attivo' 
-      ORDER BY created_at DESC
-    `
+    const result = await client.query(
+      'SELECT * FROM annunci WHERE stato = $1 ORDER BY created_at DESC',
+      ['attivo']
+    )
     
-    return res.status(200).json({ 
+    await client.end()
+    return Response.json({ 
       success: true, 
-      annunci: annunci.rows,
-      count: annunci.rows.length
+      annunci: result.rows,
+      count: result.rows.length
     })
   } catch (error) {
     console.error('Database error:', error)
-    return res.status(500).json({ 
+    if (client) await client.end()
+    return Response.json({ 
       error: 'Database error',
       details: error.message 
-    })
+    }, { status: 500 })
   }
 }

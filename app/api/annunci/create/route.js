@@ -1,7 +1,16 @@
-import { sql } from '@vercel/postgres'
+import { createClient } from '@vercel/postgres'
+
+// Use createClient for direct connection
+const createSql = () => createClient({ 
+  connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL 
+})
 
 export async function POST(request) {
+  let client
   try {
+    client = createSql()
+    await client.connect()
+    
     const body = await request.json()
     const { 
       nome_famiglia, telefono, localita, tipologia, 
@@ -9,36 +18,32 @@ export async function POST(request) {
       codice_sconto, sconto_percentuale, prezzo_pagato
     } = body
 
-    // Validation
     if (!nome_famiglia || !telefono) {
       return Response.json({ error: 'Nome e telefono sono obbligatori' }, { status: 400 })
     }
 
-    // Check if free (100% discount)
     const isFree = sconto_percentuale === 100
 
-    // Insert annuncio
-    const result = await sql`
-      INSERT INTO annunci (
+    const result = await client.query(
+      `INSERT INTO annunci (
         nome_famiglia, telefono, localita, tipologia, 
         patologie, orario, compenso, descrizione, stato,
         codice_sconto, sconto_percentuale, prezzo_pagato, pagamento
-      ) VALUES (
-        ${nome_famiglia}, ${telefono}, ${localita}, ${tipologia},
-        ${patologie}, ${orario}, ${compenso}, ${descrizione},
-        ${isFree ? 'attivo' : 'in_attesa'},
-        ${codice_sconto || null}, 
-        ${sconto_percentuale || 0}, 
-        ${prezzo_pagato || 4.99},
-        ${isFree}
-      )
-      RETURNING id
-    `
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      RETURNING id`,
+      [nome_famiglia, telefono, localita, tipologia,
+        patologie, orario, compenso, descrizione,
+        isFree ? 'attivo' : 'in_attesa',
+        codice_sconto || null, 
+        sconto_percentuale || 0, 
+        prezzo_pagato || 4.99,
+        isFree]
+    )
 
     const annuncioId = result.rows[0].id
 
-    // If free, return success immediately
     if (isFree) {
+      await client.end()
       return Response.json({
         success: true,
         annuncioId,
@@ -50,11 +55,8 @@ export async function POST(request) {
     const stripeKey = process.env.STRIPE_SECRET_KEY
     console.log('Stripe key available:', !!stripeKey)
 
-    // If Stripe key is configured, create checkout session
     if (stripeKey) {
       const baseUrl = request.headers.get('origin') || 'https://badanti.site'
-      
-      // Calculate discounted price in cents
       const unitAmount = prezzo_pagato ? Math.round(prezzo_pagato * 100) : 499
       
       const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -85,24 +87,24 @@ export async function POST(request) {
       })
 
       if (!response.ok) {
-        const error = await response.text()
-        console.error('Stripe error:', error)
+        const errorText = await response.text()
+        console.error('Stripe error:', errorText)
+        await client.end()
         return Response.json({ 
           error: 'Errore Stripe', 
-          details: error,
+          details: errorText,
           annuncioId 
         }, { status: 500 })
       }
 
       const session = await response.json()
       
-      // Update with session ID
-      await sql`
-        UPDATE annunci 
-        SET stripe_session_id = ${session.id}
-        WHERE id = ${annuncioId}
-      `
+      await client.query(
+        'UPDATE annunci SET stripe_session_id = $1 WHERE id = $2',
+        [session.id, annuncioId]
+      )
 
+      await client.end()
       return Response.json({
         success: true,
         annuncioId,
@@ -111,13 +113,12 @@ export async function POST(request) {
       })
     }
 
-    // No Stripe key - publish immediately
-    await sql`
-      UPDATE annunci 
-      SET stato = 'attivo', pagamento = true
-      WHERE id = ${annuncioId}
-    `
+    await client.query(
+      'UPDATE annunci SET stato = $1, pagamento = $2 WHERE id = $3',
+      ['attivo', true, annuncioId]
+    )
 
+    await client.end()
     return Response.json({
       success: true,
       annuncioId,
@@ -127,23 +128,29 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Error:', error)
+    if (client) await client.end()
     return Response.json({ error: error.message }, { status: 500 })
   }
 }
 
 export async function GET() {
+  let client
   try {
-    const annunci = await sql`
-      SELECT * FROM annunci 
-      WHERE stato = 'attivo' 
-      ORDER BY created_at DESC
-    `
+    client = createSql()
+    await client.connect()
     
+    const result = await client.query(
+      'SELECT * FROM annunci WHERE stato = $1 ORDER BY created_at DESC',
+      ['attivo']
+    )
+    
+    await client.end()
     return Response.json({ 
       success: true, 
-      annunci: annunci.rows 
+      annunci: result.rows 
     })
   } catch (error) {
+    if (client) await client.end()
     return Response.json({ error: error.message }, { status: 500 })
   }
 }
