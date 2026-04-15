@@ -1,6 +1,5 @@
 import { createClient } from '@vercel/postgres'
 
-// Use createClient for direct connection
 const createSql = () => createClient({ 
   connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL 
 })
@@ -21,7 +20,7 @@ export async function POST(request) {
     if (!nome_famiglia || !telefono) {
       return Response.json({ error: 'Nome e telefono sono obbligatori' }, { status: 400 })
     }
-
+    
     const isFree = sconto_percentuale === 100
 
     const result = await client.query(
@@ -53,77 +52,79 @@ export async function POST(request) {
     }
 
     const stripeKey = process.env.STRIPE_SECRET_KEY
-    console.log('Stripe key available:', !!stripeKey)
 
-    if (stripeKey) {
-      const baseUrl = request.headers.get('origin') || 'https://badanti.site'
-      const unitAmount = prezzo_pagato ? Math.round(prezzo_pagato * 100) : 499
-      
-      const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${stripeKey}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: new URLSearchParams({
-          'payment_method_types[]': 'card',
-          'line_items[0][price_data][currency]': 'eur',
-          'line_items[0][price_data][product_data][name]': sconto_percentuale > 0 
-            ? 'Pubblicazione Annuncio Badante (scontato)' 
-            : 'Pubblicazione Annuncio Badante',
-          'line_items[0][price_data][product_data][description]': sconto_percentuale > 0 
-            ? `Annuncio scontato del ${sconto_percentuale}%` 
-            : 'Annuncio di ricerca badante per 30 giorni',
-          'line_items[0][price_data][unit_amount]': unitAmount.toString(),
-          'line_items[0][quantity]': '1',
-          'mode': 'payment',
-          'success_url': `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-          'cancel_url': `${baseUrl}/annunci`,
-          'metadata[annuncioId]': annuncioId.toString(),
-          'metadata[codice_sconto]': codice_sconto || '',
-          'metadata[sconto_percentuale]': (sconto_percentuale || 0).toString(),
-          'expires_at': Math.floor(Date.now() / 1000) + 1800
-        })
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('Stripe error:', errorText)
-        await client.end()
-        return Response.json({ 
-          error: 'Errore Stripe', 
-          details: errorText,
-          annuncioId 
-        }, { status: 500 })
-      }
-
-      const session = await response.json()
-      
+    // No Stripe key - publish for free anyway
+    if (!stripeKey) {
+      console.log('No Stripe key - publishing for free')
       await client.query(
-        'UPDATE annunci SET stripe_session_id = $1 WHERE id = $2',
-        [session.id, annuncioId]
+        'UPDATE annunci SET stato = $1, pagamento = $2 WHERE id = $3',
+        ['attivo', true, annuncioId]
       )
 
       await client.end()
       return Response.json({
         success: true,
         annuncioId,
-        checkoutUrl: session.url,
-        paymentRequired: true
+        message: 'Annuncio pubblicato gratuitamente',
+        paymentRequired: false
       })
     }
 
+    // Create Stripe checkout session
+    const baseUrl = request.headers.get('origin') || 'https://badanti.site'
+    const unitAmount = prezzo_pagato ? Math.round(prezzo_pagato * 100) : 499
+    
+    const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${stripeKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        'payment_method_types[]': 'card',
+        'line_items[0][price_data][currency]': 'eur',
+        'line_items[0][price_data][product_data][name]': sconto_percentuale > 0 
+          ? 'Pubblicazione Annuncio Badante (scontato)' 
+          : 'Pubblicazione Annuncio Badante',
+        'line_items[0][price_data][product_data][description]': sconto_percentuale > 0 
+          ? `Annuncio scontato del ${sconto_percentuale}%` 
+          : 'Annuncio di ricerca badante per 30 giorni',
+        'line_items[0][price_data][unit_amount]': unitAmount.toString(),
+        'line_items[0][quantity]': '1',
+        'mode': 'payment',
+        'success_url': `${baseUrl}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+        'cancel_url': `${baseUrl}/annunci`,
+        'metadata[annuncioId]': annuncioId.toString(),
+        'metadata[codice_sconto]': codice_sconto || '',
+        'metadata[sconto_percentuale]': (sconto_percentuale || 0).toString(),
+        'expires_at': Math.floor(Date.now() / 1000) + 1800
+      })
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error('Stripe error:', errorText)
+      await client.end()
+      return Response.json({ 
+        error: 'Errore Stripe', 
+        details: errorText,
+        annuncioId 
+      }, { status: 500 })
+    }
+
+    const session = await response.json()
+    
     await client.query(
-      'UPDATE annunci SET stato = $1, pagamento = $2 WHERE id = $3',
-      ['attivo', true, annuncioId]
+      'UPDATE annunci SET stripe_session_id = $1 WHERE id = $2',
+      [session.id, annuncioId]
     )
 
     await client.end()
     return Response.json({
       success: true,
       annuncioId,
-      message: 'Annuncio pubblicato gratuitamente',
-      paymentRequired: false
+      checkoutUrl: session.url,
+      paymentRequired: true
     })
 
   } catch (error) {
